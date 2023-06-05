@@ -14,7 +14,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Order.init({
-    orderId: DataTypes.STRING,
+    merchantId: DataTypes.STRING,
+    lineItems: DataTypes.TEXT,
+    location: DataTypes.TEXT,
+    contact: DataTypes.TEXT,
+    contactEmail: DataTypes.STRING,
+    contactPhone: DataTypes.STRING,
+    deliveryFee: DataTypes.INTEGER,
+    subTotal: DataTypes.INTEGER,
+    total: DataTypes.INTEGER,
     googleOrderId: DataTypes.STRING
   }, {
     sequelize,

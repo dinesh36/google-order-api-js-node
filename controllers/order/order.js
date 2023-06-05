@@ -1,21 +1,17 @@
-const Order = require('../models').Order;
-const orderLoggerController = require('./order-logger.controller');
+const orderDao = require('./order.dao');
 
-class OrderController{
+class OrderController {
     async create(req, res) {
         try{
-            await orderLoggerController.logOrderRequest(req);
-            const order = await Order.create({orderId: '123'});
-            const orderResponse = this.constructOrderResponse(order);
-            await orderLoggerController.logOrderResponse({req, orderResponse});
+            const order = await orderDao.create(req.body);
+            const orderResponse = this.generateOrderResponse(order);
             res.status(201).send(orderResponse);
         } catch(error){
-            console.error('Error here', error);
             res.status(400).send(error);
         }
     }
 
-    constructOrderResponse(order){
+    generateOrderResponse(order){
         return {
             "finalResponse": {
             "richResponse": {
