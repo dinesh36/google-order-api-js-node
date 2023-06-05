@@ -1,35 +1,18 @@
 const Order = require('../models').Order;
-const GoogleOrderLog = require('../models').GoogleOrderLog;
+const orderLoggerController = require('./order-logger.controller');
 
 class OrderController{
     async create(req, res) {
-        const requestData = req.body;
-        const { conversation: {conversationId} } = requestData;
         try{
-            const logger = await this.createLogger({conversationId, requestData});
+            await orderLoggerController.logOrderRequest(req);
             const order = await Order.create({orderId: '123'});
-            const responseData = this.constructOrderResponse(order);
-            await this.logResponseData({logger, responseData});
-            res.status(201).send(responseData);
+            const orderResponse = this.constructOrderResponse(order);
+            await orderLoggerController.logOrderResponse({req, orderResponse});
+            res.status(201).send(orderResponse);
         } catch(error){
             console.error('Error here', error);
             res.status(400).send(error);
         }
-    }
-
-    async createLogger({conversationId, requestData}){
-        const logger = GoogleOrderLog.build({
-            googleOrderConversationId: conversationId,
-            requestData: JSON.stringify(requestData),
-        });
-        await logger.save();
-        return logger;
-    }
-
-    async logResponseData({logger, responseData}){
-        logger.actionOrderId = responseData.finalResponse.richResponse.items[0].structuredResponse.orderUpdate.actionOrderId;
-        logger.responseData = JSON.stringify(responseData);
-        await logger.save();
     }
 
     constructOrderResponse(order){
