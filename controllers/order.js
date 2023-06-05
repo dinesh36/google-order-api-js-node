@@ -5,14 +5,11 @@ module.exports = {
         const { name } = req.body;
         try{
             const order = Order.build({orderId: '123'});
-            // await order.save();
-        } catch(e){
-            console.error('Error here', e);
+            const createdOrder = await order.save();
+            res.status(201).send(createdOrder);
+        } catch(error){
+            console.error('Error here', error);
+            res.status(400).send(error);
         }
-        res.send('After creating the order...');
-        // return Order
-        //     .create({name})
-        //     .then(order => res.status(201).send(order))
-        //     .catch(error => res.status(400).send(error));
     },
 };
