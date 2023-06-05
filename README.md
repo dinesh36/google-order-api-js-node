@@ -12,3 +12,6 @@ Before running the migration create the database with name `development_test`
 
 # Change the local configuration in 
 `/config/config.json` - Do change in the `development` section.
+
+# PostgreSQL Version
+`15.3`
